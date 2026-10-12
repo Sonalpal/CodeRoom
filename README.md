@@ -2,7 +2,7 @@
 
 **Real-time collaborative code editor in your browser.** Create a room, share the link, and code together with live text sync, shared cursors and a live user list. No sign-up needed.
 
-[**Live Demo**](https://CodeRoom.onrender.com) | [GitHub](https://github.com/Sonalpal/CodeRoom)
+[**Live Demo**](https://coderoom-c2jd.onrender.com/) | [GitHub](https://github.com/Sonalpal/CodeRoom)
 
 ![CodeRoom demo](docs/CreatingRoom.png)
 (EditorRoom.png)
