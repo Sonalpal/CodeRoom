@@ -20,6 +20,7 @@
 - **Online users list:** shows who is currently in your room.
 - **Unique usernames per room:** enforced on the server (case-insensitive), so two people can't join the same room under the same name, even if they click Join at the same moment.
 - **Monaco editor:** the editor engine behind VS Code, with syntax highlighting and the `vs-dark` theme.
+- **Shared language selector:** choose from 15 languages (JavaScript, TypeScript, Python, Java, C++, C, C#, Go, Rust, PHP, HTML, CSS, JSON, SQL, Markdown). The choice is stored in the room's Yjs document, so when one person switches language, everyone in the room switches too.
 
 ## Tech Stack
 
@@ -130,6 +131,7 @@ The server reads the port from the `PORT` environment variable and falls back to
 
 ## Known Limitations
 
+- **Code can't be run.** The editor provides syntax highlighting for the selected language, but there is no in-browser execution yet.
 - **Rooms are stored in server memory.** Documents survive while the server is running but are lost on restart.
 - **Single server instance.** Room data and the username list are not shared between multiple instances, so scaling out would need a shared layer such as Redis.
 - **No passwords on rooms.** Anyone with the room code can join.
@@ -139,7 +141,6 @@ The server reads the port from the `PORT` environment variable and falls back to
 ## Roadmap
 
 - [ ] Save documents to a database (for example MongoDB) so rooms persist
-- [ ] Language selector (JavaScript, Python, C++, and more)
 - [ ] Password-protected rooms
 - [ ] Per-user cursor colors with name labels
 - [ ] Run code in the browser

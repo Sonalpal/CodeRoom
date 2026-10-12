@@ -8,6 +8,25 @@ import "./App.css";
 
 const ROOM_REGEX = /^[a-z0-9-]{1,32}$/;
 
+const LANGUAGES = [
+  { id: "javascript", label: "JavaScript" },
+  { id: "typescript", label: "TypeScript" },
+  { id: "python", label: "Python" },
+  { id: "java", label: "Java" },
+  { id: "cpp", label: "C++" },
+  { id: "c", label: "C" },
+  { id: "csharp", label: "C#" },
+  { id: "go", label: "Go" },
+  { id: "rust", label: "Rust" },
+  { id: "php", label: "PHP" },
+  { id: "html", label: "HTML" },
+  { id: "css", label: "CSS" },
+  { id: "json", label: "JSON" },
+  { id: "sql", label: "SQL" },
+  { id: "markdown", label: "Markdown" },
+];
+const DEFAULT_LANGUAGE = "javascript";
+
 const generateRoomId = () => Math.random().toString(36).slice(2, 8);
 
 function App() {
@@ -19,9 +38,11 @@ function App() {
   const [users, setUsers] = useState([]);
   const [editor, setEditor] = useState(null);
   const [provider, setProvider] = useState(null);
+  const [language, setLanguage] = useState(DEFAULT_LANGUAGE);
 
   const nameSocketRef = useRef(null); // keeps your username reserved while connected
   const ydoc = useMemo(() => new Y.Doc(), []);
+  const ymeta = useMemo(() => ydoc.getMap("meta"), [ydoc]); // shared room settings
 
   // Pre-fill the room input if the link has ?room=...
   const suggestedRoom =
@@ -34,6 +55,26 @@ function App() {
       nameSocketRef.current = null;
     };
   }, []);
+
+  // Keep the language in sync with the shared room setting (changes from anyone)
+  useEffect(() => {
+    const syncLanguage = () => {
+      const value = ymeta.get("language");
+      setLanguage(
+        LANGUAGES.some((lang) => lang.id === value) ? value : DEFAULT_LANGUAGE,
+      );
+    };
+
+    ymeta.observe(syncLanguage);
+    syncLanguage();
+
+    return () => ymeta.unobserve(syncLanguage);
+  }, [ymeta]);
+
+  const handleLanguageChange = (e) => {
+    // Writing to the shared map updates everyone in the room
+    ymeta.set("language", e.target.value);
+  };
 
   // Ask the server to reserve a username inside a room. Resolves { ok, error }.
   const reserveUsername = (name, roomId) =>
@@ -212,6 +253,23 @@ function App() {
             </button>
           </div>
         </div>
+        <div className="p-4 border-b border-gray-300">
+          <label htmlFor="language" className="text-sm text-gray-600">
+            Language (shared with the room)
+          </label>
+          <select
+            id="language"
+            value={language}
+            onChange={handleLanguageChange}
+            className="mt-2 w-full p-2 rounded-lg bg-white text-gray-950 border border-gray-300"
+          >
+            {LANGUAGES.map((lang) => (
+              <option key={lang.id} value={lang.id}>
+                {lang.label}
+              </option>
+            ))}
+          </select>
+        </div>
         <h2 className="text-2xl font-bold p-4 border-b border-gray-300">
           Users
         </h2>
@@ -229,7 +287,7 @@ function App() {
       <section className="w-3/4 bg-neutral-800 rounded-lg overflow-hidden">
         <Editor
           height="100%"
-          defaultLanguage="javascript"
+          language={language}
           defaultValue="// some comment"
           theme="vs-dark"
           onMount={(mountedEditor) => setEditor(mountedEditor)}
