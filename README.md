@@ -5,7 +5,7 @@
 [**Live Demo**](https://coderoom-c2jd.onrender.com/) | [GitHub](https://github.com/Sonalpal/CodeRoom)
 
 ![CodeRoom demo](docs/CreatingRoom.png)
-![Editor Room](EditorRoom.png)
+![Editor Room](docs/EditorRoom.png)
 
 > The demo runs on a free server that sleeps when idle. The first load can take up to a minute.
 
